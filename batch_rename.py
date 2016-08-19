@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# SORTING FILES LIKE NAME1.JPG, NAME12.JPG
+# TODO: SORTING FILES LIKE NAME1.JPG, NAME12.JPG
 import os
 import sys
 import math
