@@ -6,9 +6,9 @@ import sys
 import math
 from os.path import isfile, join
 
-if len(sys.argv)>=2:
+if len(sys.argv) >= 2:
     usr_str = str(sys.argv[1])
-    if len(sys.argv)==3:
+    if len(sys.argv) == 3:
         lead_zeros = int(sys.argv[2])
     else:
         lead_zeros = 1
@@ -22,13 +22,12 @@ cwd = os.getcwd()
 print('Working Dir: ' + cwd)
 
 # get only files in directory
-files_list = [ f for f in os.listdir(cwd) if isfile(join(cwd, f))]
+files_list = [f for f in os.listdir(cwd) if isfile(join(cwd, f))]
 
 # sort files
 files_list.sort()
 
-if lead_zeros == 1:
-    lead_zeros = int(math.log10(len(files_list)))+1
+lead_zeros = max(int(math.log10(len(files_list))) + 1, lead_zeros)
 
 # rename files dry-run
 for c, f in enumerate(files_list, start=1):
