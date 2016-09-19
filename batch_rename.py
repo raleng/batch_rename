@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-import os
-import sys
+import argparse
 import math
+import os
 from itertools import compress
 from os.path import isfile, join
 
@@ -28,40 +28,53 @@ def rename_with_counter(files_list, usr_str, lead_zeros):
         newnames.append(newname)
     return newnames
 
-# argument handling
-# first argument is the new name string
-# second argument is number of leading zeros (optional)
-if len(sys.argv) >= 2:
-    user_str = str(sys.argv[1])
-    if len(sys.argv) == 3:
-        lead_zeros = int(sys.argv[2])
-    else:
-        lead_zeros = 1
-else:
-    print('Specify at least a new name.')
-    exit()
+def batch_rename(user_str, *, lead_zeros=1):
+    """ Batch renaming of all files in current directory
 
+    Takes one positional argument
+    user_str: new file name
 
-# get current working directory
-cwd = os.getcwd()
-print('Working Dir: ' + cwd)
+    Takes one keyword argument
+    lead_zeros: number of leading zeros (default=1)
+    """
 
-# get only files in directory and sort
-files_list = [f for f in os.listdir(cwd) if isfile(join(cwd, f))]
-files_list = sort_names(files_list)
+    # get current working directory
+    cwd = os.getcwd()
+    print('Working Dir: ' + cwd)
 
-# check how many leading zeros are necessary
-lead_zeros = max(int(math.log10(len(files_list))) + 1, lead_zeros)
-new_names = rename_with_counter(files_list, user_str, lead_zeros)
+    # just a litte sanity check
+    if cwd == '/home/ralf':
+        print('Ehm, no?')
+        exit()
 
-# renaming dry run
-for old, new in zip(files_list, new_names):
-    print(old + ' --> ' + new)
+    # get only files in directory and sort
+    files_list = [f for f in os.listdir(cwd) if isfile(join(cwd, f))]
+    files_list = sort_names(files_list)
 
-# actual renaming
-if input('Start batch rename? (y/n) ') == 'y':
+    # check how many leading zeros are necessary
+    lead_zeros = max(int(math.log10(len(files_list))) + 1, lead_zeros)
+    new_names = rename_with_counter(files_list, user_str, lead_zeros)
+
+    # renaming dry run
     for old, new in zip(files_list, new_names):
-        os.rename(old, new)
-    print('Done.')
-else:
-    print('Aborted.')
+        print(old + ' --> ' + new)
+
+    # actual renaming
+    if input('Start batch rename? (y/n) ') == 'y':
+        for old, new in zip(files_list, new_names):
+            os.rename(old, new)
+        print('Done.')
+    else:
+        print('Aborted.')
+
+if __name__ == '__main__':
+    #first positional argument is new file name
+    #optional argument is number of leading zeros
+    p = argparse.ArgumentParser(description='Batch renaming all files in current dir.')
+
+    p.add_argument('user_str', type=str, help='New filename string.')
+    p.add_argument('-l', '--lead_zeros', default=1, type=int, dest='lead_zeros',
+                   help='Number of leading zeros.')
+    args = p.parse_args()
+
+    batch_rename(args.user_str, lead_zeros=args.lead_zeros)
