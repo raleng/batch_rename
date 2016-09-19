@@ -6,8 +6,16 @@ import sys
 import math
 from os.path import isfile, join
 
+def rename_with_counter(files_list, usr_str, lead_zeros):
+    """ Returns list of new filenames"""
+    newnames = []
+    for counter, filename in enumerate(files_list, start=1):
+        newname = usr_str + str(counter).zfill(lead_zeros) + '.' + filename.split('.')[-1]
+        newnames.append(newname)
+    return newnames
+
 if len(sys.argv) >= 2:
-    usr_str = str(sys.argv[1])
+    user_str = str(sys.argv[1])
     if len(sys.argv) == 3:
         lead_zeros = int(sys.argv[2])
     else:
@@ -21,24 +29,21 @@ else:
 cwd = os.getcwd()
 print('Working Dir: ' + cwd)
 
-# get only files in directory
+# get only files in directory and sort
 files_list = [f for f in os.listdir(cwd) if isfile(join(cwd, f))]
-
-# sort files
 files_list.sort()
 
+# check how many leading zeros are necessary
 lead_zeros = max(int(math.log10(len(files_list))) + 1, lead_zeros)
-
-# rename files dry-run
-for c, f in enumerate(files_list, start=1):
-    newname = usr_str + str(c).zfill(lead_zeros) + '.' + f.split('.')[-1]
-    print(f + ' --> ' + newname)
+new_names = rename_with_counter(files_list, user_str, lead_zeros)
 
 # renaming
+for old, new in zip(files_list, new_names):
+    print(old + ' --> ' + new)
+
 if input('Start batch rename? (y/n) ') == 'y':
-    for c, f in enumerate(files_list, start=1):
-        newname = usr_str + str(c).zfill(lead_zeros) + '.' + f.split('.')[-1]
-        os.rename(f, newname)
+    for old, new in zip(files_list, new_names):
+        os.rename(old, new)
     print('Done.')
 else:
     print('Aborted.')
