@@ -23,9 +23,9 @@ def sort_names(names):
 def rename_with_counter(files_list, usr_str, lead_zeros):
     """ Returns list of new filenames"""
     newnames = []
-    for counter, filename in enumerate(files_list, start=1):
-        newname = usr_str + str(counter).zfill(lead_zeros) + '.' + filename.split('.')[-1]
-        newnames.append(newname)
+    for count, fname in enumerate(files_list, start=1):
+        new = '{}{}.{}'.format(usr_str, str(count).zfill(lead_zeros), fname.split('.')[-1])
+        newnames.append(new)
     return newnames
 
 def batch_rename(user_str, *, lead_zeros=1):
@@ -40,7 +40,7 @@ def batch_rename(user_str, *, lead_zeros=1):
 
     # get current working directory
     cwd = os.getcwd()
-    print('Working Dir: ' + cwd)
+    print('Working Dir: {}'.format(cwd))
 
     # just a litte sanity check
     if cwd == '/home/ralf':
@@ -57,7 +57,7 @@ def batch_rename(user_str, *, lead_zeros=1):
 
     # renaming dry run
     for old, new in zip(files_list, new_names):
-        print(old + ' --> ' + new)
+        print('{} --> {}'.format(old, new))
 
     # actual renaming
     if input('Start batch rename? (y/n) ') == 'y':
