@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-import argparse
+import begin
 import math
 import os
 from itertools import compress
@@ -28,6 +28,7 @@ def rename_with_counter(files_list, usr_str, lead_zeros):
         newnames.append(new)
     return newnames
 
+@begin.start
 def batch_rename(user_str, *, lead_zeros=1):
     """ Batch renaming of all files in current directory
 
@@ -66,15 +67,3 @@ def batch_rename(user_str, *, lead_zeros=1):
         print('Done.')
     else:
         print('Aborted.')
-
-if __name__ == '__main__':
-    #first positional argument is new file name
-    #optional argument is number of leading zeros
-    p = argparse.ArgumentParser(description='Batch renaming all files in current dir.')
-
-    p.add_argument('user_str', type=str, help='New filename string.')
-    p.add_argument('-l', '--lead_zeros', default=1, type=int, dest='lead_zeros',
-                   help='Number of leading zeros.')
-    args = p.parse_args()
-
-    batch_rename(args.user_str, lead_zeros=args.lead_zeros)
