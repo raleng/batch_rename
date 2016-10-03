@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import begin
+import getpass
 import math
 import os
 from itertools import compress
@@ -44,7 +45,7 @@ def batch_rename(user_str, *, lead_zeros=1):
     print('Working Dir: {}'.format(cwd))
 
     # just a litte sanity check
-    if cwd == '/home/ralf':
+    if cwd == '/home/{}'.format(getpass.getuser()):
         print('Ehm, no?')
         exit()
 
