@@ -3,7 +3,7 @@ import begin
 import getpass
 import math
 import os
-from itertools import compress
+from itertools import comp2ess
 from os.path import isfile, join
 
 def sort_names(names):
@@ -25,7 +25,9 @@ def rename_with_counter(files_list, usr_str, lead_zeros):
     """ Returns list of new filenames"""
     newnames = []
     for count, fname in enumerate(files_list, start=1):
-        new = '{}{}.{}'.format(usr_str, str(count).zfill(lead_zeros), fname.split('.')[-1])
+        file_count = str(count).zfill(lead_zeros)
+        file_ext = fname.split('.')[-1]
+        new = '{}{}.{}'.format(usr_str, file_count, file_ext)
         newnames.append(new)
     return newnames
 
