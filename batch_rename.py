@@ -3,7 +3,7 @@ import begin
 import getpass
 import math
 import os
-from itertools import comp2ess
+from itertools import compress
 from os.path import isfile, join
 
 def sort_names(names):
