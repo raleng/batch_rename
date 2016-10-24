@@ -17,8 +17,7 @@ def sort_names(names):
     for l in lengths:
         mask = [1 if len(n) == l else 0 for n in names]
         partial_names = sorted(list(compress(names, mask)))
-        for name in partial_names:
-            yield name
+        yield from partial_names
 
 def rename_with_counter(files_list, usr_str, lead_zeros):
     """ Returns list of new filenames"""
@@ -28,7 +27,7 @@ def rename_with_counter(files_list, usr_str, lead_zeros):
         new = '{}{}.{}'.format(usr_str, file_count, file_ext)
         yield new
 
-@begin.start
+@begin.start(auto_convert=True)
 def batch_rename(user_str, *, lead_zeros=1):
     """ Batch renaming of all files in current directory
 
