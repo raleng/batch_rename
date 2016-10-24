@@ -13,13 +13,12 @@ def sort_names(names):
     NAME2.jpg
     NAME12.jpg
     """
-    sorted_names = []
     lengths = sorted(list({len(name) for name in names}))
     for l in lengths:
         mask = [1 if len(n) == l else 0 for n in names]
         partial_names = sorted(list(compress(names, mask)))
-        sorted_names += partial_names
-    return sorted_names
+        for name in partial_names:
+            yield name
 
 def rename_with_counter(files_list, usr_str, lead_zeros):
     """ Returns list of new filenames"""
@@ -51,7 +50,7 @@ def batch_rename(user_str, *, lead_zeros=1):
 
     # get only files in directory and sort
     files_list = [f for f in os.listdir(cwd) if isfile(join(cwd, f))]
-    files_list = sort_names(files_list)
+    files_list = list(sort_names(files_list))
 
     # check how many leading zeros are necessary
     lead_zeros = max(int(math.log10(len(files_list))) + 1, lead_zeros)
