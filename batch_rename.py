@@ -23,13 +23,11 @@ def sort_names(names):
 
 def rename_with_counter(files_list, usr_str, lead_zeros):
     """ Returns list of new filenames"""
-    newnames = []
     for count, fname in enumerate(files_list, start=1):
         file_count = str(count).zfill(lead_zeros)
         file_ext = fname.split('.')[-1]
         new = '{}{}.{}'.format(usr_str, file_count, file_ext)
-        newnames.append(new)
-    return newnames
+        yield new
 
 @begin.start
 def batch_rename(user_str, *, lead_zeros=1):
@@ -46,7 +44,7 @@ def batch_rename(user_str, *, lead_zeros=1):
     cwd = os.getcwd()
     print('Working Dir: {}'.format(cwd))
 
-    # just a litte sanity check
+    # just a little sanity check
     if cwd == '/home/{}'.format(getpass.getuser()):
         print('Ehm, no?')
         exit()
@@ -57,11 +55,11 @@ def batch_rename(user_str, *, lead_zeros=1):
 
     # check how many leading zeros are necessary
     lead_zeros = max(int(math.log10(len(files_list))) + 1, lead_zeros)
-    new_names = rename_with_counter(files_list, user_str, lead_zeros)
+    new_names = list(rename_with_counter(files_list, user_str, lead_zeros))
 
     # renaming dry run
     for old, new in zip(files_list, new_names):
-        print('{} --> {}'.format(old, new))
+        print('{old} --> {new}'.format(old=old, new=new))
 
     # actual renaming
     if input('Start batch rename? (y/n) ') == 'y':
