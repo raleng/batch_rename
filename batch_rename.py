@@ -7,8 +7,8 @@ from itertools import compress
 from os.path import isfile, join
 
 
-def get_sorted_filenames():
-    """ Get files names of CWD and sort them
+def get_sorted_file_names():
+    """ Get files names of CWD and sort them.
 
     Is able to handle reasonable sorting of
     NAME2.jpg
@@ -34,7 +34,6 @@ def get_sorted_filenames():
 
 def do_renaming(old_names, new_names):
     """ Renames the files; does a dry run first """
-
     # renaming dry run
     for old, new in zip(old_names, new_names):
         print('{old} --> {new}'.format(old=old, new=new))
@@ -49,24 +48,24 @@ def do_renaming(old_names, new_names):
 
 
 def rename_with_counter(files_list, usr_str, lead_zeros):
-    """ Yields new names ending with correct counter values """
-    for count, fname in enumerate(files_list, start=1):
+    """ Yields new names ending with correct counter values. """
+    for count, file_name in enumerate(files_list, start=1):
         file_count = str(count).zfill(lead_zeros)
-        file_ext = fname.split('.')[-1]
+        file_ext = file_name.split('.')[-1]
         new = '{usr}{num}.{ext}'.format(usr=usr_str, num=file_count, ext=file_ext)
         yield new
 
 
 def rename_with_replace(files_list, old, new):
-    """ Yields new names with replaced string parts """
-    for fname in files_list:
-        yield fname.replace(old, new)
+    """ Yields new names with replaced string parts. """
+    for file_name in files_list:
+        yield file_name.replace(old, new)
 
 
 @begin.subcommand
 def counter(user_str, *, lead_zeros=1):
-    """ Renames all files with correct counter at the end """
-    files_list = list(get_sorted_filenames())
+    """ Renames all files with correct counter at the end. """
+    files_list = list(get_sorted_file_names())
     # check how many leading zeros are necessary
     lead_zeros = max(int(math.log10(len(files_list))) + 1, lead_zeros)
 
@@ -76,20 +75,13 @@ def counter(user_str, *, lead_zeros=1):
 
 @begin.subcommand
 def replace(old_str, new_str):
-    """ Renames all files with replaced string parts """
-    files_list = list(get_sorted_filenames())
+    """ Renames all files with replaced string parts. """
+    files_list = list(get_sorted_file_names())
     new_names = list(rename_with_replace(files_list, old_str, new_str))
     do_renaming(files_list, new_names)
 
 
 @begin.start(auto_convert=True)
 def main():
-    """ Batch renaming of all files in current directory
-
-    Takes one positional argument
-    user_str: new file name
-
-    Takes one keyword argument
-    lead_zeros: number of leading zeros (default=1)
-    """
+    """ Batch renaming of all files in current directory. """
     pass
