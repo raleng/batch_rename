@@ -3,8 +3,22 @@ import begin
 import getpass
 import math
 import os
-from itertools import compress
-from os.path import isfile, join
+import re
+from os.path import isfile
+
+
+def try_int(string):
+    try:
+        return int(string)
+    except:
+        return string
+
+
+def alphanum_key(string):
+    """ Turn a string into a list of string and number chunks.
+        "z23a" -> ["z", 23, "a"]
+    """
+    return [try_int(c) for c in re.split('([0-9]+)', string)]
 
 
 def get_sorted_file_names():
@@ -23,13 +37,10 @@ def get_sorted_file_names():
         exit()
 
     # get only files in directory and sort
-    files_list = [f for f in os.listdir(cwd) if isfile(join(cwd, f))]
+    files_list = [f for f in os.listdir(cwd) if isfile(f)]
+    files_list.sort(key=alphanum_key)
 
-    lengths = sorted(list({len(name) for name in files_list}))
-    for l in lengths:
-        mask = [1 if len(n) == l else 0 for n in files_list]
-        partial_names = sorted(list(compress(files_list, mask)))
-        yield from partial_names
+    yield from files_list 
 
 
 def do_renaming(old_names, new_names):
