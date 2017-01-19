@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import begin
 import getpass
 import math
@@ -29,7 +29,7 @@ def get_sorted_file_names():
     NAME12.jpg
     """
     cwd = os.getcwd()
-    print('Working Dir: {}'.format(cwd))
+    print(f'Working Dir: {cwd}')
 
     # just a little sanity check
     if cwd == '/home/{}'.format(getpass.getuser()):
@@ -40,14 +40,14 @@ def get_sorted_file_names():
     files_list = [f for f in os.listdir(cwd) if isfile(f)]
     files_list.sort(key=alphanum_key)
 
-    yield from files_list 
+    yield from files_list
 
 
 def do_renaming(old_names, new_names):
     """ Renames the files; does a dry run first """
     # renaming dry run
     for old, new in zip(old_names, new_names):
-        print('{old} --> {new}'.format(old=old, new=new))
+        print(f'{old} --> {new}')
 
     # actual renaming
     if input('Start batch rename? (y/n) ') == 'y':
@@ -63,7 +63,7 @@ def rename_with_counter(files_list, usr_str, lead_zeros):
     for count, file_name in enumerate(files_list, start=1):
         file_count = str(count).zfill(lead_zeros)
         file_ext = file_name.split('.')[-1]
-        new = '{usr}{num}.{ext}'.format(usr=usr_str, num=file_count, ext=file_ext)
+        new = f'{usr_str}{file_count}.{file_ext}'
         yield new
 
 
