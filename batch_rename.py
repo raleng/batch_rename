@@ -47,7 +47,10 @@ def do_renaming(old_names, new_names):
     """ Renames the files; does a dry run first """
     # renaming dry run
     for old, new in zip(old_names, new_names):
-        print(f'{old} --> {new}')
+        if old == new:
+            print(f'No change to: {old}')
+        else:
+            print(f'{old} --> {new}')
 
     # actual renaming
     if input('Start batch rename? (y/n) ') == 'y':
@@ -67,10 +70,19 @@ def rename_with_counter(files_list, usr_str, lead_zeros):
         yield new
 
 
-def rename_with_replace(files_list, old, new):
+def rename_with_replace(files_list, old, new, regex):
     """ Yields new names with replaced string parts. """
     for file_name in files_list:
-        yield file_name.replace(old, new)
+        if regex:
+            try:
+                old_replace = re.findall(old, file_name)[0]
+            except IndexError:
+                continue
+        else:
+            old_replace = old
+        new_name = file_name.replace(old_replace, new)
+        if not file_name == new_name:
+            yield file_name, new_name
 
 
 @begin.subcommand
@@ -78,21 +90,23 @@ def counter(user_str, *, lead_zeros=1):
     """ Renames all files with correct counter at the end. """
     files_list = list(get_sorted_file_names())
     # check how many leading zeros are necessary
-    lead_zeros = max(int(math.log10(len(files_list))) + 1, lead_zeros)
+    lead_zeros = max(int(math.log10(len(files_list))) + 1, int(lead_zeros))
 
     new_names = list(rename_with_counter(files_list, user_str, lead_zeros))
     do_renaming(files_list, new_names)
 
 
 @begin.subcommand
-def replace(old_str, new_str):
+def replace(old_str, new_str, *, regex=False):
     """ Renames all files with replaced string parts. """
     files_list = list(get_sorted_file_names())
-    new_names = list(rename_with_replace(files_list, old_str, new_str))
-    do_renaming(files_list, new_names)
+    rwr = list(rename_with_replace(files_list, old_str, new_str, regex))
+    if len(rwr) != 0:
+        files_list, new_names = map(list, zip(rwr))
+        do_renaming(files_list, new_names)
 
 
-@begin.start(auto_convert=True)
+@begin.start
 def main():
     """ Batch renaming of all files in current directory. """
     pass
