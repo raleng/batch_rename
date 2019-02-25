@@ -106,6 +106,14 @@ def replace(old_str, new_str, *, regex=False):
         do_renaming(files_list, new_names)
 
 
+@begin.subcommand
+def no_space():
+    files_list = list(get_sorted_file_names())
+    new_names = []
+    for f in files_list:
+        new_names.append('_'.join(f.split(' ')))
+    do_renaming(files_list, new_names)
+
 @begin.start
 def main():
     """ Batch renaming of all files in current directory. """
